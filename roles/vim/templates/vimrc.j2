@@ -1,0 +1,4 @@
+if !1 | finish | endif
+runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/*.vim
+runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/plugins/*.vim
+

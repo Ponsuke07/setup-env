@@ -1,0 +1,78 @@
+---
+- name: check existence of vim
+  stat: path=/usr/local/bin/vim
+  register: vim_bin
+
+- name: check existence of dein.vim
+  stat: path={{ vim_bundle_dir }}/repos/github.com/Shougo/dein.vim/
+  register: dein
+
+- block:
+  - name: install build tools for vim
+    apt: name={{ item }} state=latest
+    with_items:
+      - make
+      - build-essential
+      - ncurses-dev
+      - lua5.2
+      - liblua5.2-dev
+      - luajit
+    become: yes
+
+  - name: clone vim from github
+    git: repo=git://github.com/vim/vim.git
+         dest=/tmp/vim
+         version=v8.1.0037
+
+  - name: build and install vim8
+    shell: "{{ item }}"
+    args:
+      chdir: /tmp/vim/src
+    with_items:
+      - ./configure --with-features=huge --enable-multibyte --enable-luainterp=dynamic --enable-gpm --enable-cscope --enable-fontset --enable-fail-if-missing --prefix=/usr/local
+      - make
+      - make install
+    become: yes
+
+  when: not vim_bin.stat.exists
+
+- name: install packages for vim
+  apt: name={{ item }}
+  become: yes
+  with_items:
+    - aspell
+    - cscope
+    - ctags
+
+- name: create vim conf dir
+  file: path={{ vim_conf_dir }}/{{ item }} state=directory
+  with_items:
+    - "init"
+    - "plugins"
+
+- block:
+  - name: create vim bundle dir
+    file: path={{ vim_bundle_dir }} state=directory
+
+  - name: install dein.vim
+    shell: "{{ item }}"
+    args:
+      chdir: /tmp
+    with_items:
+      - curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
+      - sh ./installer.sh {{ vim_bundle_dir }}
+  when: not dein.stat.exists
+
+- name: generate .vimrc
+  template: src=vimrc.j2 dest=~/.vimrc
+
+- name: generate vim configs for users
+  template: src={{ item }} dest={{ vim_conf_dir }}/init/{{ item |basename |regex_replace('\.j2$', '') }}
+  with_fileglob:
+    - ../templates/init/*.j2
+
+- name: generate vim configs for plugins
+  template: src={{ item }} dest={{ vim_conf_dir }}/plugins/{{ item |basename |regex_replace('\.j2$', '') }}
+  with_fileglob:
+    - ../templates/plugins/*.j2
+

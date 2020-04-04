@@ -1,0 +1,26 @@
+syntax on
+set nu
+"set cursorline
+set showmatch
+set backspace=indent,eol,start
+set whichwrap=b,s,h,l,<,>,[,]
+set virtualedit=onemore
+set confirm
+set wrapscan
+set smartindent
+set autoindent
+set hlsearch
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
+set visualbell t_vb=
+set noerrorbells
+"set tabstop=2
+"set shiftwidth=2
+"set expandtab
+"set softtabstop=0
+"set iminsert=2
+set conceallevel=0
+set ambiwidth=double
+autocmd FileType gitcommit setlocal spell
+hi SpecialKey ctermfg=darkmagenta
+set list
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
