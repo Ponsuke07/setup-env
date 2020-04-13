@@ -21,6 +21,7 @@ ansible_python_interpreter=/usr/bin/python3
 
 [remote:vars]
 ansible_ssh_user=hoge
+EOF
 ```
 
 # Execute playbook
