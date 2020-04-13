@@ -24,3 +24,11 @@ autocmd FileType gitcommit setlocal spell
 hi SpecialKey ctermfg=darkmagenta
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+
+" configuration for vimdiff
+highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=22
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=52
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=17
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=21
+
+autocmd FileType gitcommit setlocal spell
