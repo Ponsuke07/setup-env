@@ -31,4 +31,18 @@ highlight DiffDelete cterm=bold ctermfg=10 ctermbg=52
 highlight DiffChange cterm=bold ctermfg=10 ctermbg=17
 highlight DiffText   cterm=bold ctermfg=10 ctermbg=21
 
-autocmd FileType gitcommit setlocal spell
+if has("autocmd")
+  filetype plugin on
+  filetype indent on
+  augroup vimrc
+    autocmd!
+    autocmd FileType c           setlocal ts=8 sw=8 sts=8 noet
+    autocmd FileType diff        setlocal ts=8
+    autocmd FileType kconfig     setlocal ts=8 sw=8 sts=8 noet
+    autocmd FileType dts         setlocal ts=8 sw=8 sts=8 noet
+    autocmd FileType yml         setlocal ts=2 sw=2 sts=2 et
+    autocmd FileType yaml        setlocal ts=2 sw=2 sts=2 et
+  augroup END
+endif
+
+set wildignore+=*.ko,*.mod.c,*.order,modules.builtin

@@ -1,0 +1,20 @@
+---
+- name: install common pkgs
+  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=86400
+  with_items:
+      - git
+      - gcc
+      - make
+      - vim-nox
+  become: yes
+
+- name: Check default editor
+  stat: path=/etc/alternatives/editor
+  register: editor
+
+- name: Set vim-nox as the default editor
+  alternatives:
+      name: editor
+      path: /usr/bin/vim.nox
+  when: editor.stat.lnk_source != '/usr/bin/vim.nox'
+  become: yes

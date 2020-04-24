@@ -1,0 +1,21 @@
+---
+- name: install common pkgs
+  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=86400
+  with_items:
+      - xinetd
+      - tftpd
+      - tftp
+      - nfs-kernel-server
+  become: yes
+
+- name: create nfs dir
+  file: path=/srv/nfs
+  state: directory
+  become: yes
+
+- name: create tftp dir
+  file: path=/srv/tftp
+  state: directory
+  owner: nobody
+  mode: 0777
+  become: yes

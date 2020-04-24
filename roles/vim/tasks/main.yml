@@ -9,7 +9,7 @@
 
 - block:
   - name: install build tools for vim
-    apt: name={{ item }} state=latest
+    apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
     with_items:
       - make
       - build-essential
@@ -29,7 +29,7 @@
     args:
       chdir: /tmp/vim/src
     with_items:
-      - ./configure --with-features=huge --enable-multibyte --enable-luainterp=dynamic --enable-gpm --enable-cscope --enable-fontset --enable-fail-if-missing --prefix=/usr/local
+      - ./configure --with-features=huge --enable-terminal --enable-multibyte --enable-luainterp=dynamic --enable-gpm --enable-cscope --enable-fontset --enable-fail-if-missing --prefix=/usr/local
       - make
       - make install
     become: yes
@@ -37,7 +37,7 @@
   when: not vim_bin.stat.exists
 
 - name: install packages for vim
-  apt: name={{ item }}
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
   become: yes
   with_items:
     - aspell
@@ -55,12 +55,13 @@
     file: path={{ vim_bundle_dir }} state=directory
 
   - name: install dein.vim
-    shell: "{{ item }}"
-    args:
-      chdir: /tmp
-    with_items:
-      - curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-      - sh ./installer.sh {{ vim_bundle_dir }}
+    get_url: url={{ dein_inst_url }}
+             sha256sum={{ dein_inst_csum }}
+             dest=/tmp/installer.sh force=True
+
+  - name: install dein.vim
+    shell: "bash /tmp/installer.sh {{ vim_bundle_dir }}"
+
   when: not dein.stat.exists
 
 - name: generate .vimrc

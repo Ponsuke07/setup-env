@@ -14,3 +14,5 @@ vim_plugins:
   - ekalinin/Dockerfile.vim # dockerfileのシンタックス表示用
   - kannokanno/previm # PrevimOpenでmarkdownプレビューが出来る奴(mermaid対応)
   - { name: Shougo/vimshell, revision: 3787e5 }
+dein_inst_url: https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
+dein_inst_csum: 943163d3660423febad96fe91371807763679a683947b44b63254dc2d555094c

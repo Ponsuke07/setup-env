@@ -1,6 +1,6 @@
 ---
 - name: install packages for yocto
-  apt: name={{ item }}
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
   become: yes
   with_items:
     - gawk
@@ -16,5 +16,15 @@
     - libsdl1.2-dev
     - xterm
     - libncurses5-dev
-    - git
     - build-essential
+    - cpio
+    - python
+    - python3
+    - python3-pip
+    - python3-pexpect
+    - xz-utils
+    - debianutils
+    - iputils-ping
+    - libsdl1.2-dev
+    - xterm
+    - libssl-dev
