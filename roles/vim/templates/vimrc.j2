@@ -1,6 +1,9 @@
 if !1 | finish | endif
-if &term =~ "xterm*"
+if &term =~ "xterm*" && v:version > 800
 	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/plugins/*.vim
 	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/*.vim
+else
+	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/basic.vim
+	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/ctags.vim
+	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/cscope.vim
 endif
-
