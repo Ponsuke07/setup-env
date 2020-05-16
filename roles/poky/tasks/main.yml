@@ -28,3 +28,4 @@
     - libsdl1.2-dev
     - xterm
     - libssl-dev
+    - language-pack-en
