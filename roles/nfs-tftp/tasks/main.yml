@@ -9,13 +9,15 @@
   become: yes
 
 - name: create nfs dir
-  file: path=/srv/nfs
-  state: directory
+  file:
+    path=/srv/nfs
+    state=directory
   become: yes
 
 - name: create tftp dir
-  file: path=/srv/tftp
-  state: directory
-  owner: nobody
-  mode: 0777
+  file:
+    path=/srv/tftp
+    state=directory
+    owner=nobody
+    mode=0777
   become: yes
