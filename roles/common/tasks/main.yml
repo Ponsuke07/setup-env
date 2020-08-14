@@ -10,6 +10,7 @@
       - language-pack-ja
       - tig
       - tree
+      - u-boot-tools
   become: yes
 
 - name: Check default editor

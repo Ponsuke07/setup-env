@@ -43,6 +43,9 @@
     - aspell
     - cscope
     - ctags
+    - openjdk-8-jdk
+    - openjdk-8-jre
+
 
 - name: create vim conf dir
   file: path={{ vim_conf_dir }}/{{ item }} state=directory
