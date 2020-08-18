@@ -11,6 +11,7 @@
       - tig
       - tree
       - u-boot-tools
+      - expect
   become: yes
 
 - name: Check default editor
