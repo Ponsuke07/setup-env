@@ -11,6 +11,7 @@
       - tig
       - tree
       - u-boot-tools
+      - device-tree-compiler
       - expect
   become: yes
 
