@@ -16,4 +16,4 @@ vim_plugins:
   - rhysd/vim-grammarous # grammer checker
   - { name: Shougo/vimshell, revision: 3787e5 }
 dein_inst_url: https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
-dein_inst_csum: 943163d3660423febad96fe91371807763679a683947b44b63254dc2d555094c
+dein_inst_csum: ceb280b588ee9e14dab76f79d534580194710c9993bbac7ae30df6666aa9c7b4
