@@ -22,7 +22,7 @@
   - name: clone vim from github
     git: repo=git://github.com/vim/vim.git
          dest=/tmp/vim
-         version=v8.1.0037
+         version=v8.2.1719
 
   - name: build and install vim8
     shell: "{{ item }}"
