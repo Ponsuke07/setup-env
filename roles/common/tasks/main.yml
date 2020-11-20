@@ -13,6 +13,8 @@
       - u-boot-tools
       - device-tree-compiler
       - expect
+      - bison
+      - flex
   become: yes
 
 - name: Check default editor
