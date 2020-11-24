@@ -46,5 +46,8 @@ if has("autocmd")
 endif
 
 set wildignore+=*.ko,*.mod.c,*.order,modules.builtin
-let &t_TI = ""
-let &t_TE = ""
+
+if v:version > 800
+  let &t_TI = ""
+  let &t_TE = ""
+endif
