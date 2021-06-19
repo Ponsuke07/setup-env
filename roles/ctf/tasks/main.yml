@@ -1,0 +1,41 @@
+---
+- name: install common pkgs
+  apt: 
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+    pkg:
+      - build-essential
+      - cmake
+      - libzip-dev
+      - zlib1g-dev
+      - qt5-default
+      - libqt5svg5-dev
+      - qttools5-dev
+      - qttools5-dev-tools
+      - language-pack-ja
+      - tig
+      - tree
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+  become: yes
+
+- name: upgrade pip
+  pip:
+    name: pip
+    state: latest
+  become: yes
+
+- name: install meson
+  pip:
+    name: meson
+    state: latest
+  become: yes
+
+- name: Set timezone to Asia/Tokyo
+  timezone:
+    name: Asia/Tokyo
+  become: yes
