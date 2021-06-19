@@ -4,4 +4,8 @@
     - vim
     - poky
     - common
+
+- hosts: nfs
+  gather_facts: no
+  roles:
     - nfs-tftp
