@@ -1,51 +1,73 @@
 ---
-- name: check existence of vim
-  stat: path=/usr/local/bin/vim
-  register: vim_bin
+- name: check existence of neovim
+  stat: path=/usr/local/bin/nvim
+  register: nvim_bin
 
 - name: check existence of dein.vim
   stat: path={{ vim_bundle_dir }}/repos/github.com/Shougo/dein.vim/
   register: dein
 
 - block:
-  - name: install build tools for vim
-    apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
-    with_items:
-      - make
-      - build-essential
-      - ncurses-dev
-      - lua5.2
-      - liblua5.2-dev
-      - luajit
+  - name: install build tools for neovim
+    apt:
+      state: present
+      update_cache: yes
+      cache_valid_time: 86400
+      pkg:
+        - make
+        - build-essential
+        - ninja-build
+        - gettext
+        - libtool
+        - libtool-bin
+        - autoconf
+        - automake
+        - cmake
+        - g++
+        - pkg-config
+        - unzip
     become: yes
 
-  - name: clone vim from github
-    git: repo=git://github.com/vim/vim.git
-         dest=/tmp/vim
-         version=v8.2.1719
+  - name: clone neovim from github
+    git: repo=https://github.com/neovim/neovim.git
+         dest=/tmp/neovim
+         version=stable
 
-  - name: build and install vim8
+  - name: build and install neovim
     shell: "{{ item }}"
     args:
-      chdir: /tmp/vim/src
+      chdir: /tmp/neovim
     with_items:
-      - ./configure --with-features=huge --enable-terminal --enable-multibyte --enable-luainterp=dynamic --enable-gpm --enable-cscope --enable-fontset --enable-fail-if-missing --prefix=/usr/local
       - make
+      - make CMAKE_BUILD_TYPE=Release
       - make install
     become: yes
 
-  when: not vim_bin.stat.exists
+  - name: Setup alius for neovim
+    lineinfile:
+      dest=~/.bashrc
+      line={{ item }}
+    with_items:
+      - alias vim='nvim'
 
-- name: install packages for vim
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
+  when: not nvim_bin.stat.exists
+
+- name: install packages for neovim
+  apt:
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+    pkg:
+      - aspell
+      - cscope
+      - ctags
+      - openjdk-8-jdk
+      - openjdk-8-jre
   become: yes
-  with_items:
-    - aspell
-    - cscope
-    - ctags
-    - openjdk-8-jdk
-    - openjdk-8-jre
 
+- name: install vim-vint
+  pip:
+    name: vim-vint
 
 - name: create vim conf dir
   file: path={{ vim_conf_dir }}/{{ item }} state=directory
@@ -69,6 +91,14 @@
 
 - name: generate .vimrc
   template: src=vimrc.j2 dest=~/.vimrc
+
+- name: create .confif/nvim
+  file:
+    path: ~/.config/nvim
+    state: directory
+
+- name: generate init.vim for nvim
+  template: src=nvim.init.j2 dest=~/.config/nvim/init.vim
 
 - name: generate vim configs for users
   template: src={{ item }} dest={{ vim_conf_dir }}/init/{{ item |basename |regex_replace('\.j2$', '') }}

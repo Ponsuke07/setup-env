@@ -1,5 +1,5 @@
 if !1 | finish | endif
-if &term =~ "xterm*" && v:version > 800
+if $TERM =~# 'xterm*' && (v:version > 800 || has('nvim'))
 	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/plugins/*.vim
 	runtime! {{ vim_conf_dir |regex_replace('^~/.vim', '') }}/init/*.vim
 else

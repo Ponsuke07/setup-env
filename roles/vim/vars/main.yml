@@ -10,7 +10,8 @@ vim_plugins:
   - tomtom/tcomment_vim # Shift+V Ctrl+--
   - vim-scripts/AnsiEsc.vim
   - tpope/vim-fugitive
-  - vim-syntastic/syntastic.git
+  #- vim-syntastic/syntastic.git
+  - dense-analysis/ale
   - ekalinin/Dockerfile.vim # dockerfileのシンタックス表示用
   - kannokanno/previm # PrevimOpenでmarkdownプレビューが出来る奴(mermaid対応)
   - rhysd/vim-grammarous # grammer checker

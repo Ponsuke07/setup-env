@@ -3,13 +3,13 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 " Required:
-set runtimepath+=$HOME/{{ vim_bundle_dir | regex_replace('^~/', '') }}/repos/github.com/Shougo/dein.vim
+set runtimepath+=~/{{ vim_bundle_dir | regex_replace('^~/', '') }}/repos/github.com/Shougo/dein.vim
 " Required:
-if dein#load_state('$HOME/{{ vim_bundle_dir | regex_replace('^~/', '') }}/')
-  call dein#begin('$HOME/{{ vim_bundle_dir | regex_replace('^~/', '') }}/')
+if dein#load_state('~/{{ vim_bundle_dir | regex_replace('^~/', '') }}/')
+  call dein#begin('~/{{ vim_bundle_dir | regex_replace('^~/', '') }}/')
   " Let dein manage dein
   " Required:
-  call dein#add('$HOME/{{ vim_bundle_dir | regex_replace('^~/', '') }}/repos/github.com/Shougo/dein.vim')
+  call dein#add('~/{{ vim_bundle_dir | regex_replace('^~/', '') }}/repos/github.com/Shougo/dein.vim')
 
   " Add or remove your plugins here:
 {% for plugin in vim_plugins %}
