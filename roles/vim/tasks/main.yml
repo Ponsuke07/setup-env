@@ -65,9 +65,11 @@
       - openjdk-8-jre
   become: yes
 
-- name: install vim-vint
+- name: install python modules for neovim
   pip:
-    name: vim-vint
+    name:
+      - vim-vint
+      - pynvim
 
 - name: create vim conf dir
   file: path={{ vim_conf_dir }}/{{ item }} state=directory

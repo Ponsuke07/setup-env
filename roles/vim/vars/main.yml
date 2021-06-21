@@ -3,7 +3,8 @@ vim_bundle_dir: ~/.vim/bundles
 vim_plugins:
   - Shougo/neosnippet.vim
   - Shougo/neosnippet-snippets
-  - Shougo/neocomplete.vim
+    #- Shougo/neocomplete.vim
+  - Shougo/deoplete.nvim
   - Shougo/unite.vim
   - Shougo/neomru.vim
   - scrooloose/nerdtree  # :NERDTree
