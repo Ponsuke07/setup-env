@@ -71,7 +71,10 @@
       - vim-vint
       - pynvim
 
-- name: create vim conf dir
+- name: cleanup vim conf dir
+  shell: "rm -rf {{ vim_conf_dir }}"
+
+- name: create
   file: path={{ vim_conf_dir }}/{{ item }} state=directory
   with_items:
     - "init"
