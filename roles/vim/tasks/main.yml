@@ -3,11 +3,9 @@
   stat: path=/usr/local/bin/nvim
   register: nvim_bin
 
-- name: check existence of dein.vim
-  stat: path={{ vim_bundle_dir }}/repos/github.com/Shougo/dein.vim/
-  register: dein
-
-- block:
+- name: block for install nvim from source
+  block:
+  when: not nvim_bin.stat.exists
   - name: install build tools for neovim
     apt:
       state: present
@@ -26,20 +24,28 @@
         - g++
         - pkg-config
         - unzip
+        - curl
     become: yes
 
   - name: clone neovim from github
-    git: repo=https://github.com/neovim/neovim.git
-         dest=/tmp/neovim
-         version=stable
+    git:
+      repo: https://github.com/neovim/neovim.git
+      dest: /tmp/neovim
+      version: stable
 
-  - name: build and install neovim
+  - name: build neovim
     shell: "{{ item }}"
     args:
       chdir: /tmp/neovim
     with_items:
       - make
-      - make CMAKE_BUILD_TYPE=Release
+      - make CMAKE_BUILD_TYPE=RelWithDebInfo
+
+  - name: build neovim
+    shell: "{{ item }}"
+    args:
+      chdir: /tmp/neovim
+    with_items:
       - make install
     become: yes
 
@@ -50,8 +56,6 @@
     with_items:
       - alias vim='nvim'
 
-  when: not nvim_bin.stat.exists
-
 - name: install packages for neovim
   apt:
     state: present
@@ -60,7 +64,7 @@
     pkg:
       - aspell
       - cscope
-      - ctags
+      - universal-ctags
       - openjdk-8-jdk
       - openjdk-8-jre
   become: yes
@@ -70,6 +74,7 @@
     name:
       - vim-vint
       - pynvim
+    extra_args: "--break-system-packages"
 
 - name: cleanup vim conf dir
   shell: "rm -rf {{ vim_conf_dir }}"
@@ -79,20 +84,6 @@
   with_items:
     - "init"
     - "plugins"
-
-- block:
-  - name: create vim bundle dir
-    file: path={{ vim_bundle_dir }} state=directory
-
-  - name: install dein.vim
-    get_url: url={{ dein_inst_url }}
-             sha256sum={{ dein_inst_csum }}
-             dest=/tmp/installer.sh force=True
-
-  - name: install dein.vim
-    shell: "bash /tmp/installer.sh {{ vim_bundle_dir }}"
-
-  when: not dein.stat.exists
 
 - name: generate .vimrc
   template: src=vimrc.j2 dest=~/.vimrc
