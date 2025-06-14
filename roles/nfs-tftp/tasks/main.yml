@@ -6,8 +6,8 @@
     cache_valid_time: 86400
     pkg:
       - xinetd
-      - tftpd
-      - tftp
+      - tftpd-hpa
+      - tftp-hpa
       - nfs-kernel-server
   become: yes
 
