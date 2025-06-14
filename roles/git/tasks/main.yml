@@ -1,0 +1,73 @@
+---
+- name: install git and modules
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    cache_valid_time: 86400
+    name:
+      - git
+      - tig
+      - git-email
+      - git-completion
+      - perl
+  become: true
+
+- name: Config username
+  community.general.git_config:
+    name: user.name
+    value: "{{ git_user }}"
+    scope: global
+
+- name: Config email
+  community.general.git_config:
+    name: user.email
+    value: "{{ git_email }}"
+    scope: global
+
+- name: Config credential
+  community.general.git_config:
+    name: credential.helper
+    value: store
+    scope: global
+
+
+- name: Config sendemail
+  block:
+    - name: Config smtpServer
+      community.general.git_config:
+        name: sendemail.smtpServer
+        value: smtp.gmail.com
+        scope: global
+
+    - name: Config Port
+      community.general.git_config:
+        name: sendemail.smtpServerPort
+        value: 587
+        scope: global
+
+    - name: Config encryption
+      community.general.git_config:
+        name: sendemail.smtpEncryption
+        value: tls
+        scope: global
+
+    - name: Config smtp user
+      community.general.git_config:
+        name: sendemail.smtpUser
+        value: "{{ git_email }}"
+        scope: global
+
+- name: Add editor setting
+  community.general.git_config:
+    name: core.editor
+    value: vim
+    scope: global
+  
+- name: Add ctags setting
+  community.general.git_config:
+    name: alias.ctags
+    value: "!.git/hooks/ctags,"
+    scope: global
+
+#- name: Install perl script dependencies for git send-email
+#  ansible.builtin.command: "cpan Authen::SASL Authen::SASL::Perl::NTLM MIME::Base64 Net::SMTP::SSL"
