@@ -4,57 +4,57 @@
   register: nvim_bin
 
 - name: block for install nvim from source
-  block:
   when: not nvim_bin.stat.exists
-  - name: install build tools for neovim
-    apt:
-      state: present
-      update_cache: yes
-      cache_valid_time: 86400
-      pkg:
+  block:
+    - name: install build tools for neovim
+      apt:
+        state: present
+        update_cache: yes
+        cache_valid_time: 86400
+        pkg:
+          - make
+          - build-essential
+          - ninja-build
+          - gettext
+          - libtool
+          - libtool-bin
+          - autoconf
+          - automake
+          - cmake
+          - g++
+          - pkg-config
+          - unzip
+          - curl
+      become: yes
+
+    - name: clone neovim from github
+      git:
+        repo: https://github.com/neovim/neovim.git
+        dest: /tmp/neovim
+        version: stable
+
+    - name: build neovim
+      shell: "{{ item }}"
+      args:
+        chdir: /tmp/neovim
+      with_items:
         - make
-        - build-essential
-        - ninja-build
-        - gettext
-        - libtool
-        - libtool-bin
-        - autoconf
-        - automake
-        - cmake
-        - g++
-        - pkg-config
-        - unzip
-        - curl
-    become: yes
+        - make CMAKE_BUILD_TYPE=RelWithDebInfo
 
-  - name: clone neovim from github
-    git:
-      repo: https://github.com/neovim/neovim.git
-      dest: /tmp/neovim
-      version: stable
+    - name: build neovim
+      shell: "{{ item }}"
+      args:
+        chdir: /tmp/neovim
+      with_items:
+        - make install
+      become: yes
 
-  - name: build neovim
-    shell: "{{ item }}"
-    args:
-      chdir: /tmp/neovim
-    with_items:
-      - make
-      - make CMAKE_BUILD_TYPE=RelWithDebInfo
-
-  - name: build neovim
-    shell: "{{ item }}"
-    args:
-      chdir: /tmp/neovim
-    with_items:
-      - make install
-    become: yes
-
-  - name: Setup alius for neovim
-    lineinfile:
-      dest=~/.bashrc
-      line={{ item }}
-    with_items:
-      - alias vim='nvim'
+    - name: Setup alius for neovim
+      lineinfile:
+        dest=~/.bashrc
+        line={{ item }}
+      with_items:
+        - alias vim='nvim'
 
 - name: install packages for neovim
   apt:
