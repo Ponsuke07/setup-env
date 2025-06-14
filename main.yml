@@ -1,9 +1,9 @@
 - hosts: all
   gather_facts: no
   roles:
+    - common
     - vim
     - poky
-    - common
 
 - hosts: nfs
   gather_facts: no
