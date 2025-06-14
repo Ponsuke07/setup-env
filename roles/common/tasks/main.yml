@@ -18,6 +18,7 @@
       - expect
       - bison
       - flex
+      - python3-pip
   become: yes
 
 - name: Check default editor
