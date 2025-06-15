@@ -9,7 +9,6 @@
       - gcc
       - make
       - vim-nox
-      - language-pack-ja
       - tig
       - tree
       - u-boot-tools
@@ -19,6 +18,16 @@
       - flex
       - python3-pip
   become: yes
+
+- name: Install language-pack-ja for ubuntu
+  apt:
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+    name:
+      - language-pack-ja
+  become: yes
+  when: ansible_distribution == "Ubuntu"
 
 - name: Check default editor
   stat: path=/etc/alternatives/editor
