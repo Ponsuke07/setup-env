@@ -1,5 +1,5 @@
 - hosts: all
-  gather_facts: no
+  gather_facts: true
   environment: "{{ proxy_env }}"
   roles:
     - common
@@ -8,13 +8,13 @@
     - poky
 
 - hosts: nfs
-  gather_facts: no
+  gather_facts: true
   environment: "{{ proxy_env }}"
   roles:
     - nfs-tftp
 
 - hosts: ctf
-  gather_facts: no
+  gather_facts: true
   environment: "{{ proxy_env }}"
   roles:
     - ctf
