@@ -1,5 +1,6 @@
 - hosts: all
   gather_facts: no
+  environment: "{{ proxy_env }}"
   roles:
     - common
     - git
@@ -8,10 +9,12 @@
 
 - hosts: nfs
   gather_facts: no
+  environment: "{{ proxy_env }}"
   roles:
     - nfs-tftp
 
 - hosts: ctf
   gather_facts: no
+  environment: "{{ proxy_env }}"
   roles:
     - ctf
