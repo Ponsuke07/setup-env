@@ -70,12 +70,24 @@
       - python3-pip
   become: yes
 
-- name: install python modules for neovim
+- name: install python modules for neovim (for ubuntu <= 20.04)
+  pip:
+    name:
+      - vim-vint
+      - pynvim
+  when:
+    (ansible_distribution == "Ubuntu" and ansible_distribution_major_version <= "20") or
+    (ansible_distribution == "Debian" and ansible_distribution_major_version <= "10")
+
+- name: install python modules for neovim (for ubuntu > 20.04)
   pip:
     name:
       - vim-vint
       - pynvim
     extra_args: "--break-system-packages"
+  when:
+    (ansible_distribution == "Ubuntu" and ansible_distribution_major_version > "20") or
+    (ansible_distribution == "Debian" and ansible_distribution_major_version > "10")
 
 - name: cleanup vim conf dir
   shell: "rm -rf {{ vim_conf_dir }}"
