@@ -31,3 +31,22 @@
       - libssl-dev
       - language-pack-en
   become: yes
+
+- name: Check existence of repo command
+  stat: path=~/bin/repo
+  register: repo_bin
+
+- block:
+  - file: path=~/bin state=directory
+
+  - name: Download repo command
+    get_url:
+      url: "http://commondatastorage.googleapis.com/git-repo-downloads/repo"
+      dest: ~/bin/repo
+      mode: 0755
+
+  - name: Path to ~/bin
+    lineinfile: path=~/.bashrc line="export PATH=${PATH}:~/bin"
+
+  when: not repo_bin.stat.exists
+
