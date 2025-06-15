@@ -1,4 +1,6 @@
-- hosts: all
+---
+- name: Install git, vim and poky packages
+  hosts: all
   gather_facts: true
   environment: "{{ proxy_env }}"
   roles:
@@ -7,13 +9,15 @@
     - vim
     - poky
 
-- hosts: nfs
+- name: Install nfs and tftp
+  hosts: nfs
   gather_facts: true
   environment: "{{ proxy_env }}"
   roles:
     - nfs-tftp
 
-- hosts: ctf
+- name: Install packages for ctf
+  hosts: ctf
   gather_facts: true
   environment: "{{ proxy_env }}"
   roles:

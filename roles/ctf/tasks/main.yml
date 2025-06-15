@@ -1,6 +1,6 @@
 ---
-- name: install common pkgs
-  apt: 
+- name: Install common pkgs
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -23,19 +23,14 @@
       - software-properties-common
   become: true
 
-- name: upgrade pip
-  pip:
-    name: pip
-    state: latest
-  become: true
-
-- name: install meson
-  pip:
-    name: meson
-    state: latest
+- name: Upgrade pip
+  ansible.builtin.pip:
+    name:
+      - pip
+      - meson
   become: true
 
 - name: Set timezone to Asia/Tokyo
-  timezone:
+  community.general.timezone:
     name: Asia/Tokyo
   become: true

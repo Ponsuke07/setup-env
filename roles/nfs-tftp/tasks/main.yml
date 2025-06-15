@@ -1,6 +1,6 @@
 ---
-- name: install common pkgs
-  apt:
+- name: Install common pkgs
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -11,16 +11,17 @@
       - nfs-kernel-server
   become: true
 
-- name: create nfs dir
-  file:
-    path=/srv/nfs
-    state=directory
+- name: Create nfs dir
+  ansible.builtin.file:
+    path: /srv/nfs
+    state: directory
+    mode: "0777"
   become: true
 
-- name: create tftp dir
-  file:
-    path=/srv/tftp
-    state=directory
-    owner=nobody
-    mode=0777
+- name: Create tftp dir
+  ansible.builtin.file:
+    path: /srv/tftp
+    state: directory
+    owner: nobody
+    mode: "0777"
   become: true

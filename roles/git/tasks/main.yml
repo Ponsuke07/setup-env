@@ -1,5 +1,5 @@
 ---
-- name: install git and modules
+- name: Install git and modules
   ansible.builtin.apt:
     state: present
     update_cache: true
@@ -29,7 +29,6 @@
     name: credential.helper
     value: store
     scope: global
-
 
 - name: Config sendemail
   block:
@@ -62,12 +61,9 @@
     name: core.editor
     value: vim
     scope: global
-  
+
 - name: Add ctags setting
   community.general.git_config:
     name: alias.ctags
     value: "!.git/hooks/ctags,"
     scope: global
-
-#- name: Install perl script dependencies for git send-email
-#  ansible.builtin.command: "cpan Authen::SASL Authen::SASL::Perl::NTLM MIME::Base64 Net::SMTP::SSL"

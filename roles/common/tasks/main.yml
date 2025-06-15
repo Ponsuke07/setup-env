@@ -1,6 +1,6 @@
 ---
-- name: install common pkgs
-  apt:
+- name: Install common pkgs
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -20,7 +20,7 @@
   become: true
 
 - name: Install language-pack-ja for ubuntu
-  apt:
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -30,17 +30,18 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Check default editor
-  stat: path=/etc/alternatives/editor
+  ansible.builtin.stat:
+    path: /etc/alternatives/editor
   register: editor
 
 - name: Set vim-nox as the default editor
-  alternatives:
-      name: editor
-      path: /usr/bin/vim.nox
+  community.general.alternatives:
+    name: editor
+    path: /usr/bin/vim.nox
   when: editor.stat.lnk_source != '/usr/bin/vim.nox'
   become: true
 
 - name: Set timezone to Asia/Tokyo
-  timezone:
+  community.general.timezone:
     name: Asia/Tokyo
   become: true

@@ -1,6 +1,6 @@
 ---
-- name: install packages for yocto
-  apt:
+- name: Install packages for yocto
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -33,20 +33,26 @@
   become: true
 
 - name: Check existence of repo command
-  stat: path=~/bin/repo
+  ansible.builtin.stat:
+    path: ~/bin/repo
   register: repo_bin
 
-- block:
-  - file: path=~/bin state=directory
-
-  - name: Download repo command
-    get_url:
-      url: "http://commondatastorage.googleapis.com/git-repo-downloads/repo"
-      dest: ~/bin/repo
-      mode: 0755
-
-  - name: Path to ~/bin
-    lineinfile: path=~/.bashrc line="export PATH=${PATH}:~/bin"
-
+- name: Install repo command
   when: not repo_bin.stat.exists
+  block:
+    - name: Create ~/bin
+      ansible.builtin.file:
+        path: ~/bin
+        mode: "0755"
+        state: directory
 
+    - name: Download repo command
+      ansible.builtin.get_url:
+        url: "http://commondatastorage.googleapis.com/git-repo-downloads/repo"
+        dest: ~/bin/repo
+        mode: "0755"
+
+    - name: Path to ~/bin
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: "export PATH=${PATH}:~/bin"

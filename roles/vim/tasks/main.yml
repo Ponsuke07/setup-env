@@ -1,13 +1,14 @@
 ---
-- name: check existence of neovim
-  stat: path=/usr/local/bin/nvim
+- name: Check existence of neovim
+  ansible.builtin.stat:
+    path: /usr/local/bin/nvim
   register: nvim_bin
 
-- name: block for install nvim from source
+- name: Block for install nvim from source
   when: not nvim_bin.stat.exists
   block:
-    - name: install build tools for neovim
-      apt:
+    - name: Install build tools for neovim
+      ansible.builtin.apt:
         state: present
         update_cache: true
         cache_valid_time: 86400
@@ -27,37 +28,38 @@
           - curl
       become: true
 
-    - name: clone neovim from github
-      git:
+    - name: Clone neovim from github
+      ansible.builtin.git:
         repo: https://github.com/neovim/neovim.git
         dest: /tmp/neovim
         version: stable
 
-    - name: build neovim
-      shell: "{{ item }}"
+    - name: Build neovim
+      ansible.builtin.shell: |
+        make
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        exit 0
       args:
         chdir: /tmp/neovim
-      with_items:
-        - make
-        - make CMAKE_BUILD_TYPE=RelWithDebInfo
+      register: ret
+      changed_when: ret.rc != '0'
 
-    - name: build neovim
-      shell: "{{ item }}"
+    - name: Build neovim
+      ansible.builtin.shell: |
+        make install
       args:
         chdir: /tmp/neovim
-      with_items:
-        - make install
       become: true
+      register: ret
+      changed_when: ret.rc != '0'
 
     - name: Setup alius for neovim
-      lineinfile:
-        dest=~/.bashrc
-        line={{ item }}
-      with_items:
-        - alias vim='nvim'
+      ansible.builtin.lineinfile:
+        dest: ~/.bashrc
+        line: "alias vim='nvim'"
 
-- name: install packages for neovim
-  apt:
+- name: Install packages for neovim
+  ansible.builtin.apt:
     state: present
     update_cache: true
     cache_valid_time: 86400
@@ -70,8 +72,8 @@
       - python3-pip
   become: true
 
-- name: install python modules for neovim (for ubuntu <= 20.04)
-  pip:
+- name: Install python modules for neovim (for ubuntu <= 20.04)
+  ansible.builtin.pip:
     name:
       - vim-vint
       - pynvim
@@ -79,8 +81,8 @@
     (ansible_distribution == "Ubuntu" and ansible_distribution_major_version <= "20") or
     (ansible_distribution == "Debian" and ansible_distribution_major_version <= "10")
 
-- name: install python modules for neovim (for ubuntu > 20.04)
-  pip:
+- name: Install python modules for neovim (for ubuntu > 20.04)
+  ansible.builtin.pip:
     name:
       - vim-vint
       - pynvim
@@ -89,33 +91,50 @@
     (ansible_distribution == "Ubuntu" and ansible_distribution_major_version > "20") or
     (ansible_distribution == "Debian" and ansible_distribution_major_version > "10")
 
-- name: cleanup vim conf dir
-  shell: "rm -rf {{ vim_conf_dir }}"
+- name: Cleanup vim conf dir
+  ansible.builtin.file:
+    path: "{{ vim_conf_dir }}"
+    state: absent
 
-- name: create
-  file: path={{ vim_conf_dir }}/{{ item }} state=directory
+- name: Create vim conf dir
+  ansible.builtin.file:
+    path: "{{ vim_conf_dir }}/{{ item }}"
+    state: directory
+    mode: "0755"
   with_items:
     - "init"
     - "plugins"
 
-- name: generate .vimrc
-  template: src=vimrc.j2 dest=~/.vimrc
+- name: Generate .vimrc
+  ansible.builtin.template:
+    src: vimrc.j2
+    dest: ~/.vimrc
+    mode: "0644"
 
-- name: create .confif/nvim
-  file:
+- name: Create .confif/nvim
+  ansible.builtin.file:
     path: ~/.config/nvim
     state: directory
+    mode: "0755"
 
-- name: generate init.vim for nvim
-  template: src=nvim.init.j2 dest=~/.config/nvim/init.vim
+- name: Generate init.vim for nvim
+  ansible.builtin.template:
+    src: nvim.init.j2
+    dest: ~/.config/nvim/init.vim
+    mode: "0644"
 
-- name: generate vim configs for users
-  template: src={{ item }} dest={{ vim_conf_dir }}/init/{{ item |basename |regex_replace('\.j2$', '') }}
+- name: Generate vim configs for users
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ vim_conf_dir }}/init/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0644"
   with_fileglob:
     - ../templates/init/*.j2
 
-- name: generate vim configs for plugins
-  template: src={{ item }} dest={{ vim_conf_dir }}/plugins/{{ item |basename |regex_replace('\.j2$', '') }}
+- name: Generate vim configs for plugins
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ vim_conf_dir }}/plugins/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0644"
   with_fileglob:
     - ../templates/plugins/*.j2
-
