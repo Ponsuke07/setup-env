@@ -9,7 +9,6 @@
       - gcc
       - make
       - vim-nox
-      - language-pack-ja-base
       - language-pack-ja
       - tig
       - tree
