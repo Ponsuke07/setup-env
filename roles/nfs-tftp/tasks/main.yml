@@ -2,20 +2,20 @@
 - name: install common pkgs
   apt:
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     pkg:
       - xinetd
       - tftpd-hpa
       - tftp-hpa
       - nfs-kernel-server
-  become: yes
+  become: true
 
 - name: create nfs dir
   file:
     path=/srv/nfs
     state=directory
-  become: yes
+  become: true
 
 - name: create tftp dir
   file:
@@ -23,4 +23,4 @@
     state=directory
     owner=nobody
     mode=0777
-  become: yes
+  become: true

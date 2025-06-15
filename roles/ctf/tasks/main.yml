@@ -2,7 +2,7 @@
 - name: install common pkgs
   apt: 
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     pkg:
       - build-essential
@@ -21,21 +21,21 @@
       - curl
       - gnupg-agent
       - software-properties-common
-  become: yes
+  become: true
 
 - name: upgrade pip
   pip:
     name: pip
     state: latest
-  become: yes
+  become: true
 
 - name: install meson
   pip:
     name: meson
     state: latest
-  become: yes
+  become: true
 
 - name: Set timezone to Asia/Tokyo
   timezone:
     name: Asia/Tokyo
-  become: yes
+  become: true

@@ -9,7 +9,7 @@
     - name: install build tools for neovim
       apt:
         state: present
-        update_cache: yes
+        update_cache: true
         cache_valid_time: 86400
         pkg:
           - make
@@ -25,7 +25,7 @@
           - pkg-config
           - unzip
           - curl
-      become: yes
+      become: true
 
     - name: clone neovim from github
       git:
@@ -47,7 +47,7 @@
         chdir: /tmp/neovim
       with_items:
         - make install
-      become: yes
+      become: true
 
     - name: Setup alius for neovim
       lineinfile:
@@ -59,7 +59,7 @@
 - name: install packages for neovim
   apt:
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     pkg:
       - aspell
@@ -68,7 +68,7 @@
       - openjdk-8-jdk
       - openjdk-8-jre
       - python3-pip
-  become: yes
+  become: true
 
 - name: install python modules for neovim (for ubuntu <= 20.04)
   pip:

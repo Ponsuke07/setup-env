@@ -2,7 +2,7 @@
 - name: install packages for yocto
   apt:
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     pkg:
       - gawk
@@ -30,7 +30,7 @@
       - xterm
       - libssl-dev
       - language-pack-en
-  become: yes
+  become: true
 
 - name: Check existence of repo command
   stat: path=~/bin/repo

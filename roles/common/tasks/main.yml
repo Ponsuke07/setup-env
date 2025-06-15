@@ -2,7 +2,7 @@
 - name: install common pkgs
   apt:
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     name:
       - git
@@ -17,16 +17,16 @@
       - bison
       - flex
       - python3-pip
-  become: yes
+  become: true
 
 - name: Install language-pack-ja for ubuntu
   apt:
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     name:
       - language-pack-ja
-  become: yes
+  become: true
   when: ansible_distribution == "Ubuntu"
 
 - name: Check default editor
@@ -38,9 +38,9 @@
       name: editor
       path: /usr/bin/vim.nox
   when: editor.stat.lnk_source != '/usr/bin/vim.nox'
-  become: yes
+  become: true
 
 - name: Set timezone to Asia/Tokyo
   timezone:
     name: Asia/Tokyo
-  become: yes
+  become: true
