@@ -17,6 +17,7 @@ vim_plugins:
   - rhysd/vim-grammarous     # grammer checker
   - rust-lang/rust.vim
   - ujihisa/neco-look
+  - kergoth/vim-bitbake
   - { name: Shougo/vimshell, revision: 3787e5 }
 dein_inst_url: https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
 dein_inst_csum: c2ffc9e7a4ae85198391a4f27884361fa49a46474e3d92e0796a055c29c0401d
