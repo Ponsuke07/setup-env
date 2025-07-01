@@ -9,6 +9,14 @@
     - vim
     - poky
 
+- name: Install docker
+  hosts: all
+  gather_facts: true
+  environment: "{{ proxy_env }}"
+  become: true
+  roles:
+    - docker
+
 - name: Install nfs and tftp
   hosts: nfs
   gather_facts: true

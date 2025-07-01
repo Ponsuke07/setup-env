@@ -1,0 +1,88 @@
+---
+- name: Set architecture
+  ansible.builtin.set_fact:
+    docker_arch: "{{ 'arm64' if ansible_machine == 'aarch64' else 'amd64' if ansible_machine == 'x86_64' else ansible_machine }}"
+
+- name: Set distribution
+  ansible.builtin.set_fact:
+    docker_distro: "{{ 'ubuntu' if ansible_distribution == 'Ubuntu' else 'debian' if ansible_distribution == 'Debian' else ansible_distribution }}"
+
+- name: Create /etc/apt/keyrings
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Add Docker's official GPG key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+    force: true
+  when:
+    (ansible_distribution == "Ubuntu" and ansible_distribution_major_version <= "20") or
+    (ansible_distribution == "Debian" and ansible_distribution_major_version <= "10")
+
+- name: Add Docker's official GPG key
+  ansible.builtin.get_url:
+    url: "https://download.docker.com/linux/{{ docker_distro }}/gpg"
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+    force: true
+  when:
+    (ansible_distribution == "Ubuntu" and ansible_distribution_major_version >= "22") or
+    (ansible_distribution == "Debian" and ansible_distribution_major_version >= "11")
+
+- name: Add the repository to Apt sources
+  ansible.builtin.apt_repository:
+    repo: >
+      deb [arch={{ docker_arch }} signed-by=/etc/apt/keyrings/docker.asc]
+      https://download.docker.com/linux/{{ docker_distro }} {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Install the Docker packages
+  ansible.builtin.apt:
+    name:
+      - 'docker-ce'
+      - 'docker-ce-cli'
+      - 'containerd.io'
+      - 'docker-buildx-plugin'
+      - 'docker-compose-plugin'
+    state: present
+
+- name: Check existance of compose-switch
+  ansible.builtin.stat:
+    path: /usr/local/bin/compose-switch
+  register: compose_switch_bin
+
+- name: Install compose-switch
+  when: "not compose_switch_bin.stat.exists"
+  block:
+    - name: Download install script for compose-switch
+      ansible.builtin.get_url:
+        url: "{{ compose_switch.url }}"
+        checksum: "sha256:{{ compose_switch.sha256sum }}"
+        dest: /tmp/install.sh
+        force: true
+        mode: "0755"
+
+    - name: Install compose-switch
+      ansible.builtin.shell: |
+        /tmp/install.sh
+      args:
+        executable: /bin/bash
+      register: ret
+      changed_when: ret.rc != 0
+
+    - name: Remove install script
+      ansible.builtin.file:
+        path: /tmp/install.sh
+        state: absent
+
+- name: Be sure docker is running and enabled
+  ansible.builtin.systemd:
+    name: docker
+    state: reloaded
+    enabled: true

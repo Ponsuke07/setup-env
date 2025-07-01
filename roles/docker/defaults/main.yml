@@ -1,0 +1,3 @@
+compose_switch:
+  url: https://raw.githubusercontent.com/docker/compose-switch/master/install_on_linux.sh
+  sha256sum: 1a528999f96bc811bb4b5f391bcc22d17b874c06f1740992775e15a965e177e8
